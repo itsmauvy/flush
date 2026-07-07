@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품상세 — 플러쉬 FLUSH 공식몰</title>
+  <meta name="description" content="FLUSH 제품 상세 — 쉐이드를 고르고 발색과 제형을 확인하세요.">
+  <link rel="icon" href="assets/flush_icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="chrome-header"></div>
+
+  <main>
+    <div class="container">
+      <div class="pd-layout" id="pd-layout">
+        <div class="pd-visual">
+          <span class="img-ph" id="pd-img" role="img" aria-label=""></span>
+        </div>
+        <div class="pd-info">
+          <span class="product-cat" id="pd-cat"></span>
+          <h1 id="pd-name"></h1>
+          <p class="product-name-en" id="pd-name-en" style="font-size:14px;margin-bottom:8px"></p>
+          <p class="review-meta" id="pd-review-meta" style="margin-bottom:14px"></p>
+          <div class="price-row" id="pd-price" style="margin-bottom:20px"></div>
+          <p class="pd-desc" id="pd-desc"></p>
+
+          <div class="pd-benefit-box" id="pd-benefit"></div>
+
+          <p class="pd-shade-label"><span data-i18n="pd.shadeLabel"></span> · <em id="pd-shade-name"></em></p>
+          <div class="shade-picker" id="pd-shades"></div>
+
+          <div class="pd-buy-row">
+            <div class="qty-stepper">
+              <button id="qty-minus" aria-label="decrease">−</button>
+              <output id="qty-value">1</output>
+              <button id="qty-plus" aria-label="increase">+</button>
+            </div>
+            <button class="btn btn-primary" id="pd-add" data-i18n="pd.addCart"></button>
+          </div>
+          <button class="btn btn-ghost" id="pd-buy-now" style="width:100%" data-i18n="pd.buyNow"></button>
+        </div>
+      </div>
+
+      <!-- 탭 : 상품정보 / 구매후기 / 배송·교환·반품 -->
+      <div class="pd-tabs" id="pd-tabs">
+        <button class="pd-tab active" data-tab="info"><span data-i18n="pd.tab.info"></span></button>
+        <button class="pd-tab" data-tab="review"><span data-i18n="pd.tab.review"></span> <b id="tab-review-count">0</b></button>
+        <button class="pd-tab" data-tab="shipping"><span data-i18n="pd.tab.shipping"></span></button>
+      </div>
+
+      <section class="pd-tab-panel" id="panel-info">
+        <div class="pd-texture" id="pd-texture" style="margin-top:0">
+          <h2>Texture &amp; Feel</h2>
+          <div class="texture-points" id="pd-texture-points"></div>
+        </div>
+        <div style="margin-top:32px">
+          <table class="info-table">
+            <tr><th data-i18n="pd.info.volume"></th><td id="info-volume">3.2g / 0.11oz</td></tr>
+            <tr><th data-i18n="pd.info.expiry"></th><td data-i18n="pd.info.expiryVal"></td></tr>
+            <tr><th data-i18n="pd.info.origin"></th><td data-i18n="pd.info.originVal"></td></tr>
+            <tr><th data-i18n="pd.info.seller"></th><td data-i18n="pd.info.sellerVal"></td></tr>
+            <tr><th data-i18n="pd.info.caution"></th><td data-i18n="pd.info.cautionVal"></td></tr>
+          </table>
+        </div>
+      </section>
+
+      <section class="pd-tab-panel" id="panel-review" hidden>
+        <div class="pd-review-summary">
+          <span class="big-score" id="rv-score"></span>
+          <div>
+            <p class="stars" id="rv-stars"></p>
+            <p id="rv-count-text"></p>
+          </div>
+        </div>
+        <div class="pd-review-list" id="pd-review-list"></div>
+      </section>
+
+      <section class="pd-tab-panel" id="panel-shipping" hidden>
+        <table class="info-table">
+          <tr><th data-i18n="pd.ship.fee"></th><td data-i18n="pd.ship.feeVal"></td></tr>
+          <tr><th data-i18n="pd.ship.time"></th><td data-i18n="pd.ship.timeVal"></td></tr>
+          <tr><th data-i18n="pd.ship.period"></th><td data-i18n="pd.ship.periodVal"></td></tr>
+          <tr><th data-i18n="pd.ship.noreturn"></th><td data-i18n="pd.ship.noreturnVal"></td></tr>
+          <tr><th data-i18n="pd.ship.cs"></th><td data-i18n="pd.ship.csVal"></td></tr>
+        </table>
+      </section>
+
+      <!-- 립 ↔ 치크 조합 추천 -->
+      <section class="section">
+        <div class="section-head">
+          <span class="eyebrow">Pairs Well With</span>
+          <h2 class="section-title" data-i18n="pd.pairs.title"></h2>
+          <p class="section-sub" data-i18n="pd.pairs.sub"></p>
+        </div>
+        <div class="product-grid" id="pd-pairs"></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="chrome-footer"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/product.js"></script>
+</body>
+</html>

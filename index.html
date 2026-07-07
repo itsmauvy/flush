@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>플러쉬 FLUSH 공식몰 — 립 &amp; 치크 컬러 브랜드</title>
+  <meta name="description" content="입술과 볼에 가볍게 번지는 생기, FLUSH 공식 온라인몰. 신규가입 3,000원 쿠폰 · 3만원 이상 무료배송">
+  <link rel="icon" href="assets/flush_icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="home">
+
+  <div id="chrome-header"></div>
+
+  <main>
+    <!-- 히어로 슬라이드 배너 — 이미지 3장 (2·3번은 이미지 대기 중) -->
+    <section class="main-banner" id="event">
+      <div class="banner-track" id="banner-track">
+        <div class="banner-slide s1">
+          <div class="container">
+            <div class="banner-copy">
+              <h2 data-i18n="bn1.title"></h2>
+              <a href="product.html?id=powder-blush" class="btn btn-primary" data-i18n="bn1.cta"></a>
+            </div>
+          </div>
+        </div>
+        <div class="banner-slide s-ph">
+          <span class="img-ph wide" role="img" aria-label="hero image 2 (1920x600)"></span>
+        </div>
+        <div class="banner-slide s-ph">
+          <span class="img-ph wide" role="img" aria-label="hero image 3 (1920x600)"></span>
+        </div>
+      </div>
+      <div class="banner-nav" id="banner-nav"></div>
+    </section>
+
+    <!-- 카테고리 퀵메뉴 -->
+    <section class="section">
+      <div class="container">
+        <div class="quick-cats">
+          <a class="quick-cat" href="shop.html?category=lip-tint">
+            <span class="qc-circle"><img src="assets/products/lip-tint-cherry.png" alt="립 틴트" loading="lazy"></span>
+            <span data-i18n="qc.tint"></span>
+          </a>
+          <a class="quick-cat" href="shop.html?category=lip-balm">
+            <span class="qc-circle"><img src="assets/products/lip-balm-01.png" alt="립밤" loading="lazy"></span>
+            <span data-i18n="qc.balm"></span>
+          </a>
+          <a class="quick-cat" href="shop.html?category=powder-blush">
+            <span class="qc-circle"><img src="assets/products/powder-blush-04.png" alt="파우더 블러쉬" loading="lazy"></span>
+            <span data-i18n="qc.powder"></span>
+          </a>
+          <a class="quick-cat" href="shop.html?category=cream-blush">
+            <span class="qc-circle"><img src="assets/products/cream-blush-vintage-rose.png" alt="크림 블러쉬" loading="lazy"></span>
+            <span data-i18n="qc.cream"></span>
+          </a>
+          <a class="quick-cat" href="shop.html?category=lip-liner">
+            <span class="qc-circle"><img src="assets/products/lip-liner-01.png" alt="아이라이너" loading="lazy"></span>
+            <span data-i18n="qc.liner"></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW / BEST 통합 섹션 : 좌측 비주얼 + 우측 2x2 그리드 -->
+    <section class="section">
+      <div class="container bestnew-layout">
+        <div class="bestnew-visual">
+          <span class="img-ph" role="img" aria-label="new best visual"></span>
+        </div>
+        <div class="bestnew-right">
+          <div class="sec-tabs">
+            <button class="sec-tab" data-sec-tab="new">NEW</button>
+            <span class="sec-tab-div"></span>
+            <button class="sec-tab active" data-sec-tab="best">BEST</button>
+          </div>
+          <div class="product-grid" id="bestnew-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 무드별 탐색 -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Shop by Mood</span>
+          <h2 class="section-title" data-i18n="sec.mood.title"></h2>
+          <p class="section-sub" data-i18n="sec.mood.sub"></p>
+        </div>
+        <div class="mood-row" id="mood-row"></div>
+      </div>
+    </section>
+
+    <!-- 기획세트 -->
+    <section class="section" id="sets">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Set Promotion</span>
+          <h2 class="section-title" data-i18n="sec.set.title"></h2>
+          <p class="section-sub" data-i18n="sec.set.sub"></p>
+        </div>
+        <div class="pair-grid" id="set-grid"></div>
+      </div>
+    </section>
+
+    <!-- 포토리뷰 -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Photo Review</span>
+          <h2 class="section-title" data-i18n="sec.review.title"></h2>
+          <p class="section-sub" data-i18n="sec.review.sub"></p>
+        </div>
+        <div class="review-grid" id="review-grid"></div>
+      </div>
+    </section>
+
+    <!-- 브랜드 티저 -->
+    <section class="section">
+      <div class="container">
+        <div class="brand-teaser">
+          <span class="eyebrow">Brand Story</span>
+          <h2 class="section-title" data-i18n="teaser.title"></h2>
+          <p data-i18n="teaser.desc"></p>
+          <a href="about.html" class="btn btn-ghost" style="background:#fff" data-i18n="teaser.cta"></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="chrome-footer"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // NEW / BEST 탭 섹션 : 각 4개씩 (제품 겹침 허용)
+    function renderBestNew(tab) {
+      const grid = document.getElementById("bestnew-grid");
+      const list =
+        tab === "new"
+          ? PRODUCTS.filter((p) => p.isNew).slice(0, 4)
+          : [...PRODUCTS]
+              .filter((p) => !p.comingSoon)
+              .sort((a, b) => b.reviewCount - a.reviewCount)
+              .slice(0, 4);
+      // 탭에 맞춰 카드 뱃지 통일 (NEW 탭 → NEW, BEST 탭 → BEST)
+      grid.innerHTML = list
+        .map((p) => productCardHTML(p, 0, tab === "new" ? "NEW" : "BEST"))
+        .join("");
+      document.querySelectorAll(".sec-tab").forEach((b) =>
+        b.classList.toggle("active", b.dataset.secTab === tab)
+      );
+    }
+    document.querySelector(".sec-tabs").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-sec-tab]");
+      if (btn) renderBestNew(btn.dataset.secTab);
+    });
+    renderBestNew("best");
+
+    // 무드 칩
+    document.getElementById("mood-row").innerHTML = MOODS.map(
+      (m) => `<a class="mood-chip" href="shop.html?mood=${m.id}">
+                <span class="mood-dot" style="background:${m.hex}"></span>${m.label}</a>`
+    ).join("");
+
+    // 기획세트
+    document.getElementById("set-grid").innerHTML = SETS.map(setCardHTML).join("");
+
+    // 포토리뷰 : 평점 높은 순 4개
+    document.getElementById("review-grid").innerHTML = [...REVIEWS]
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 4)
+      .map(reviewCardHTML)
+      .join("");
+
+    // 히어로 슬라이더 — 화살표/도트로만 넘김, 배너 높이는 현재 슬라이드에 맞춤
+    (() => {
+      const banner = document.querySelector(".main-banner");
+      const track = document.getElementById("banner-track");
+      const slides = track.children.length;
+      const nav = document.getElementById("banner-nav");
+      let idx = 0;
+
+      nav.innerHTML = Array.from({ length: slides }, (_, i) =>
+        `<button class="banner-dot ${i === 0 ? "active" : ""}" data-slide="${i}" aria-label="banner ${i + 1}"></button>`
+      ).join("");
+
+      function fitBanner() {
+        banner.style.height = track.children[idx].offsetHeight + "px";
+      }
+
+      function go(n) {
+        idx = (n + slides) % slides;
+        track.style.transform = `translateX(-${idx * 100}%)`;
+        nav.querySelectorAll(".banner-dot").forEach((d, i) =>
+          d.classList.toggle("active", i === idx)
+        );
+        fitBanner();
+      }
+
+      nav.addEventListener("click", (e) => {
+        const dot = e.target.closest("[data-slide]");
+        if (dot) go(+dot.dataset.slide);
+      });
+      window.addEventListener("resize", fitBanner);
+      fitBanner();
+    })();
+  </script>
+</body>
+</html>
