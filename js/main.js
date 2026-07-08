@@ -378,7 +378,7 @@ function reviewMetaHTML(product) {
 
 function productCardHTML(product, rank = 0, badgeText = null) {
   const soon = !!product.comingSoon;
-  const thumb = phImg(pName(product));
+  const thumb = productImg(product.img, pName(product));
   const label = soon ? "COMING SOON" : badgeText || product.badge;
   const badge = label
     ? `<span class="badge ${soon ? "soon" : ""}">${label}</span>`
