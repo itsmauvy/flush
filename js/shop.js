@@ -108,8 +108,9 @@ function renderGrid() {
     LANG === "en"
       ? `<strong>${list.length}</strong> item${list.length === 1 ? "" : "s"}`
       : `총 <strong>${list.length}</strong>개의 상품`;
-  document.getElementById("shop-grid").innerHTML = list.map((p) => productCardHTML(p)).join("");
+  document.getElementById("shop-grid").innerHTML = list.map((p) => productCardHTML(p, 0, null, null, true)).join("");
   document.getElementById("empty-note").hidden = list.length > 0;
+  startShopCycles();
 
   const title = document.getElementById("shop-title");
   if (state.q) {
@@ -118,6 +119,37 @@ function renderGrid() {
     const cat = CATEGORY_FILTERS.find((f) => f.id === state.category);
     title.textContent = state.category === "all" ? t("shop.title") : catLabel(cat);
   }
+}
+
+/* shop 카드 : 제품의 쉐이드별 모델컷을 3초마다 순환 + 쉐이드 도트/색상명 동기화 */
+let shopCycTimers = [];
+function stopShopCycles() {
+  shopCycTimers.forEach(clearInterval);
+  shopCycTimers = [];
+}
+function startShopCycles() {
+  stopShopCycles();
+  document.querySelectorAll(".product-card.cycling").forEach((card) => {
+    const models = [...card.querySelectorAll(".thumb-model")];
+    if (models.length <= 1) return;
+    const dots = [...card.querySelectorAll(".shade-dots span")];
+    const nameEl = card.querySelector(".card-shade-name");
+    let i = 0;
+    const timer = setInterval(() => {
+      if (!card.isConnected) return clearInterval(timer);
+      i = (i + 1) % models.length;
+      const shade = models[i].dataset.shade;
+      models.forEach((m, k) => m.classList.toggle("on", k === i));
+      dots.forEach((d) => {
+        const on = d.dataset.shade === shade;
+        d.classList.toggle("is-active", on);
+        if (on) d.style.setProperty("--sh", d.dataset.hex);
+        else d.style.removeProperty("--sh");
+      });
+      if (nameEl) nameEl.textContent = shade;
+    }, 3000);
+    shopCycTimers.push(timer);
+  });
 }
 
 function rerender() {

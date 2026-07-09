@@ -150,6 +150,7 @@ function renderHeader() {
             <a href="shop.html?category=lip-tint">NEW</a>
             <a href="shop.html?category=lip">${t("gnb.lip")}</a>
             <a href="shop.html?category=cheek">${t("gnb.cheek")}</a>
+            <a href="index.html#mixmatch">${t("gnb.set")}</a>
           </div>
         </div>
         <a class="drawer-item" href="index.html#event">EVENT</a>
@@ -348,28 +349,18 @@ function shadeDotsHTML(product, activeImg = null) {
     .map((s) => {
       const active = activeImg && s.img === activeImg;
       const style = active ? `background:${s.hex};--sh:${s.hex}` : `background:${s.hex}`;
-      return `<span class="${active ? "is-active" : ""}" style="${style}" title="${s.name}"></span>`;
+      return `<span class="${active ? "is-active" : ""}" style="${style}" title="${s.name}" data-shade="${s.name}" data-hex="${s.hex}"></span>`;
     })
     .join("");
   return `<div class="shade-dots">${dots}</div>`;
 }
 
-/* 쉐이드 이미지 → 대응하는 모델컷 경로 (assets/products/models/<같은 이름>.jpg) */
+/* 쉐이드 이미지 → 대응하는 모델컷 경로 (assets/models/<같은 이름>.jpg) */
 function shadeModelSrc(shade) {
   if (!shade.img) return null;
   return shade.img
-    .replace("assets/products/", "assets/products/models/")
+    .replace("assets/products/", "assets/models/")
     .replace(/\.(png|jpe?g|webp)$/i, ".jpg");
-}
-
-/* hover 시 순환할 쉐이드별 모델컷 레이어 (파일 없으면 onerror로 제거) */
-function shadeModelLayerHTML(product) {
-  const imgs = product.shades
-    .map(shadeModelSrc)
-    .filter(Boolean)
-    .map((src) => `<img class="thumb-model" data-msrc="${src}" alt="" onerror="this.remove()">`)
-    .join("");
-  return imgs ? `<span class="thumb-models">${imgs}</span>` : "";
 }
 
 function priceHTML(product) {
@@ -390,9 +381,11 @@ function reviewMetaHTML(product) {
           <b>${product.rating.toFixed(1)}</b> ${t("card.reviews")} <b>${count}</b></p>`;
 }
 
-function productCardHTML(product, rank = 0, badgeText = null, imgOverride = null) {
+function productCardHTML(product, rank = 0, badgeText = null, imgOverride = null, cycle = false) {
   const soon = !!product.comingSoon;
   const effImg = imgOverride || product.img; // 카드가 실제로 보여주는 이미지(=쉐이드)
+  const cardShade = product.shades.find((s) => s.img === effImg) || product.shades[0];
+  const withImg = product.shades.filter((s) => s.img);
   const thumb = productImg(effImg, pName(product));
   // badgeText === false 면 뱃지 숨김
   const label = soon ? "COMING SOON" : badgeText === false ? null : badgeText || product.badge;
@@ -400,19 +393,39 @@ function productCardHTML(product, rank = 0, badgeText = null, imgOverride = null
     ? `<span class="badge ${soon ? "soon" : ""}">${label}</span>`
     : "";
   const rankTag = rank ? `<span class="rank-tag">${rank}</span>` : "";
-  // hover 시 쉐이드별 모델컷을 순환 (파일 없으면 onerror로 제거 → 깨진 이미지 방지)
-  const model = soon ? "" : shadeModelLayerHTML(product);
+
+  let model = "";
+  let shadeNameEl = "";
+  let dotsActive = effImg;
+  if (!soon && cycle) {
+    // shop : 제품의 쉐이드별 모델컷을 3초마다 순환 (shop.js 가 구동)
+    model = `<span class="thumb-models">${withImg
+      .map((s, i) => {
+        const src = shadeModelSrc(s);
+        return src
+          ? `<img class="thumb-model ${i === 0 ? "on" : ""}" data-shade="${s.name}" src="${src}" alt="${pName(product)} ${s.name}" loading="lazy" onerror="this.remove()">`
+          : "";
+      })
+      .join("")}</span>`;
+    shadeNameEl = `<p class="card-shade-name">${withImg[0] ? withImg[0].name : ""}</p>`;
+    dotsActive = withImg[0] ? withImg[0].img : effImg;
+  } else if (!soon) {
+    // new/best : 이 카드 쉐이드의 모델컷 하나만 (hover)
+    const modelSrc = cardShade ? shadeModelSrc(cardShade) : null;
+    model = modelSrc
+      ? `<img class="thumb-model" src="${modelSrc}" alt="${pName(product)} 모델컷" loading="lazy" onerror="this.remove()">`
+      : "";
+  }
+
   const btn = soon
     ? `<button class="quick-add" disabled>${t("btn.soon")}</button>`
     : `<button class="quick-add" data-quick-add="${product.id}">${t("btn.add")}</button>`;
-  // 카드가 보여주는 쉐이드로 바로 이동하도록 링크에 shade 포함
-  const cardShade = product.shades.find((s) => s.img === effImg);
   const link = soon
     ? "javascript:void(0)"
     : `product.html?id=${product.id}${cardShade ? `&shade=${encodeURIComponent(cardShade.name)}` : ""}`;
 
   return `
-    <article class="product-card">
+    <article class="product-card${cycle ? " cycling" : ""}" data-pid="${product.id}">
       <a class="product-thumb" href="${link}">
         ${rankTag}${badge}
         ${thumb}
@@ -422,7 +435,8 @@ function productCardHTML(product, rank = 0, badgeText = null, imgOverride = null
         <a href="${link}">
           <h3 class="product-name">${pName(product)}</h3>
         </a>
-        ${soon ? "" : shadeDotsHTML(product, effImg)}
+        ${shadeNameEl}
+        ${soon ? "" : shadeDotsHTML(product, dotsActive)}
         ${priceHTML(product)}
         ${soon ? "" : reviewMetaHTML(product)}
         <div class="product-bottom">${btn}</div>
@@ -438,7 +452,7 @@ function setCardHTML(set) {
   const original = items.reduce((s, it) => s + it.product.price, 0);
   const price = Math.round((original * (1 - set.discount)) / 100) * 100;
   const imgs = items
-    .map((it) => phImg(`${pName(it.product)} ${it.shade.name}`, "small"))
+    .map((it) => productImg(it.shade.img || it.product.img, `${pName(it.product)} ${it.shade.name}`, "small"))
     .join("");
   const composition = items
     .map((it) => `${pName(it.product)} [${it.shade.name}]`)
@@ -493,13 +507,18 @@ function addSetToCart(setId) {
   );
 }
 
-/* ---------- 장바구니 사이드 패널 : 담기 즉시 확인 + 구매 ---------- */
+/* ---------- 장바구니 사이드 패널 : 담기 즉시 확인 + 선택/삭제 + 구매 ---------- */
+const cartDeselected = new Set(); // 체크 해제된 항목 key
+const cartKey = (it) => `${it.productId}|${it.shade}`;
+
 function cartDrawerItemHTML(item) {
   const product = getProduct(item.productId);
   if (!product) return "";
   const shade = getShade(product, item.shade);
+  const key = cartKey(item);
   return `
-    <div class="cart-item" data-pid="${product.id}" data-shade="${shade.name}">
+    <div class="cart-item" data-pid="${product.id}" data-shade="${shade.name}" data-key="${key}">
+      <label class="cart-check"><input type="checkbox" class="cart-item-check" ${cartDeselected.has(key) ? "" : "checked"} aria-label="select item"></label>
       <a class="cart-item-thumb" href="product.html?id=${product.id}">
         ${productImg(shade.img || product.img, `${pName(product)} ${shade.name}`, "small")}
       </a>
@@ -524,8 +543,10 @@ function renderCartDrawerContents() {
   const footEl = document.getElementById("cart-drawer-foot");
   if (!itemsEl || !footEl) return;
 
+  const toolsEl = document.getElementById("cart-drawer-tools");
   const cart = getCart();
   if (!cart.length) {
+    if (toolsEl) toolsEl.hidden = true;
     itemsEl.innerHTML = `
       <div class="cart-drawer-empty">
         <p>${t("cart.empty.title")}</p>
@@ -535,27 +556,44 @@ function renderCartDrawerContents() {
     return;
   }
 
+  if (toolsEl) toolsEl.hidden = false;
   itemsEl.innerHTML = cart.map(cartDrawerItemHTML).join("");
 
-  const subtotal = cartTotalPrice();
-  const shipping = subtotal >= FREE_SHIPPING ? 0 : SHIPPING_FEE;
+  // 선택(체크)된 항목 기준으로 금액 계산
+  const selected = cart.filter((it) => !cartDeselected.has(cartKey(it)));
+  const subtotal = selected.reduce((s, it) => {
+    const p = getProduct(it.productId);
+    return p ? s + p.price * it.qty : s;
+  }, 0);
+  const shipping = subtotal === 0 ? 0 : subtotal >= FREE_SHIPPING ? 0 : SHIPPING_FEE;
   const remain = FREE_SHIPPING - subtotal;
-  footEl.innerHTML = `
-    <p class="cart-drawer-ship">${
-      remain > 0
+
+  const selall = document.getElementById("cart-selall");
+  const selallLabel = document.getElementById("cart-selall-label");
+  if (selall) selall.checked = selected.length === cart.length;
+  if (selallLabel)
+    selallLabel.textContent =
+      LANG === "en" ? `All (${selected.length}/${cart.length})` : `전체 (${selected.length}/${cart.length})`;
+
+  const shipMsg =
+    subtotal === 0
+      ? LANG === "en" ? "No items selected" : "선택된 상품이 없습니다"
+      : remain > 0
         ? LANG === "en"
-          ? `Add <em>${formatPrice(remain)}</em> more for free shipping`
-          : `<em>${formatPrice(remain)}</em>만 더 담으면 무료배송!`
+          ? `Add <em>${formatPrice(remain)}</em> for free shipping`
+          : `<em>${formatPrice(remain)}</em> 추가 구매 시 무료배송`
         : LANG === "en"
-          ? `🎉 You've unlocked <em>free shipping</em>!`
-          : `🎉 <em>무료배송</em> 조건을 채웠어요!`
-    }</p>
+          ? `Free shipping applied`
+          : `무료배송이 적용됩니다`;
+
+  footEl.innerHTML = `
+    <p class="cart-drawer-ship">${shipMsg}</p>
     <div class="summary-row"><span>${t("cart.subtotal")}</span><b>${formatPrice(subtotal)}</b></div>
     <div class="summary-row"><span>${t("cart.shippingFee")}</span><b>${shipping === 0 ? (LANG === "en" ? "Free" : "무료") : formatPrice(shipping)}</b></div>
     <div class="summary-row total"><span>${t("cart.total")}</span><b>${formatPrice(subtotal + shipping)}</b></div>
     <div class="cart-drawer-actions">
       <a href="cart.html" class="btn btn-ghost">${t("toast.viewCart")}</a>
-      <button class="btn btn-primary" id="cart-drawer-checkout">${t("cart.checkout")}</button>
+      <button class="btn btn-primary" id="cart-drawer-checkout"${selected.length ? "" : " disabled"}>${t("cart.checkout")}</button>
     </div>`;
 }
 
@@ -585,15 +623,25 @@ function renderCartDrawer() {
     <div class="drawer-dim" id="cart-dim"></div>
     <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-label="${t("hd.cart")}">
       <div class="cart-drawer-head">
-        <h3>${t("cart.title")} <b class="cart-count-text">0</b></h3>
+        <h3>${t("cart.title")}</h3>
         <button class="drawer-close" id="cart-drawer-close" aria-label="close">
           <span class="material-symbols-outlined">close</span>
         </button>
+      </div>
+      <div class="cart-drawer-tools" id="cart-drawer-tools" hidden>
+        <label class="cart-selall"><input type="checkbox" id="cart-selall"><span id="cart-selall-label">${LANG === "en" ? "All" : "전체"}</span></label>
+        <div class="cart-tool-btns">
+          <button type="button" id="cart-del-selected">${LANG === "en" ? "Delete selected" : "선택삭제"}</button>
+          <span class="tool-div">|</span>
+          <button type="button" id="cart-del-all">${LANG === "en" ? "Clear all" : "전체삭제"}</button>
+        </div>
       </div>
       <div class="cart-drawer-items" id="cart-drawer-items"></div>
       <div class="cart-drawer-foot" id="cart-drawer-foot"></div>
     </aside>`;
   while (wrap.firstElementChild) document.body.appendChild(wrap.firstElementChild);
+
+  const itemsEl = document.getElementById("cart-drawer-items");
 
   document.getElementById("cart-drawer-close").addEventListener("click", () => setCartDrawer(false));
   document.getElementById("cart-dim").addEventListener("click", () => setCartDrawer(false));
@@ -601,8 +649,8 @@ function renderCartDrawer() {
     if (e.key === "Escape") setCartDrawer(false);
   });
 
-  // 수량 조절 / 삭제
-  document.getElementById("cart-drawer-items").addEventListener("click", (e) => {
+  // 수량 조절 / 개별 삭제
+  itemsEl.addEventListener("click", (e) => {
     const row = e.target.closest(".cart-item");
     if (!row) return;
     const { pid, shade } = row.dataset;
@@ -611,59 +659,58 @@ function renderCartDrawer() {
 
     if (e.target.closest("[data-cart-minus]")) setCartQty(pid, shade, item.qty - 1);
     else if (e.target.closest("[data-cart-plus]")) setCartQty(pid, shade, Math.min(10, item.qty + 1));
-    else if (e.target.closest("[data-cart-remove]")) removeFromCart(pid, shade);
+    else if (e.target.closest("[data-cart-remove]")) { cartDeselected.delete(row.dataset.key); removeFromCart(pid, shade); }
     else return;
 
     syncCartPage();
   });
 
-  // 데모 구매하기
+  // 개별 체크박스
+  itemsEl.addEventListener("change", (e) => {
+    const chk = e.target.closest(".cart-item-check");
+    if (!chk) return;
+    const key = chk.closest(".cart-item").dataset.key;
+    if (chk.checked) cartDeselected.delete(key);
+    else cartDeselected.add(key);
+    renderCartDrawerContents();
+  });
+
+  // 전체선택
+  document.getElementById("cart-selall").addEventListener("change", (e) => {
+    cartDeselected.clear();
+    if (!e.target.checked) getCart().forEach((it) => cartDeselected.add(cartKey(it)));
+    renderCartDrawerContents();
+  });
+
+  // 선택삭제 (체크된 항목 제거, 남은 항목은 다시 전체선택)
+  document.getElementById("cart-del-selected").addEventListener("click", () => {
+    if (!getCart().some((it) => !cartDeselected.has(cartKey(it)))) return;
+    const survivors = getCart().filter((it) => cartDeselected.has(cartKey(it)));
+    cartDeselected.clear();
+    saveCart(survivors);
+    syncCartPage();
+  });
+
+  // 전체삭제
+  document.getElementById("cart-del-all").addEventListener("click", () => {
+    cartDeselected.clear();
+    saveCart([]);
+    syncCartPage();
+  });
+
+  // 구매하기 (선택 항목 결제)
   document.getElementById("cart-drawer-foot").addEventListener("click", (e) => {
     if (!e.target.closest("#cart-drawer-checkout")) return;
+    const survivors = getCart().filter((it) => cartDeselected.has(cartKey(it)));
+    cartDeselected.clear();
     showToast(t("toast.checkout"));
-    saveCart([]);
-    setCartDrawer(false);
+    saveCart(survivors);
+    if (!survivors.length) setCartDrawer(false);
     syncCartPage();
   });
 
   updateCartBadge();
 }
-
-/* ---------- 카드 hover : 쉐이드별 모델컷 자동 순환 ---------- */
-function startModelCycle(card) {
-  const models = [...card.querySelectorAll(".thumb-model")];
-  if (!models.length) return;
-  // 최초 hover 시에만 실제 로드 (없는 파일은 onerror로 제거됨)
-  models.forEach((m) => {
-    if (!m.getAttribute("src") && m.dataset.msrc) m.src = m.dataset.msrc;
-  });
-  let i = 0;
-  const usable = () =>
-    [...card.querySelectorAll(".thumb-model")].filter((m) => !m.complete || m.naturalWidth > 0);
-  const show = () => {
-    card.querySelectorAll(".thumb-model.on").forEach((m) => m.classList.remove("on"));
-    const ms = usable();
-    if (ms.length) ms[i % ms.length].classList.add("on");
-  };
-  show();
-  card._modelTimer = setInterval(() => {
-    i++;
-    show();
-  }, 1000);
-}
-function stopModelCycle(card) {
-  clearInterval(card._modelTimer);
-  card._modelTimer = null;
-  card.querySelectorAll(".thumb-model.on").forEach((m) => m.classList.remove("on"));
-}
-document.addEventListener("mouseover", (e) => {
-  const card = e.target.closest(".product-card");
-  if (card && !card._modelTimer) startModelCycle(card);
-});
-document.addEventListener("mouseout", (e) => {
-  const card = e.target.closest(".product-card");
-  if (card && !card.contains(e.relatedTarget)) stopModelCycle(card);
-});
 
 /* ---------- global event delegation ---------- */
 document.addEventListener("click", (e) => {

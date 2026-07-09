@@ -10,14 +10,28 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=8">
+  <link rel="stylesheet" href="css/style.css?v=29">
 </head>
 <body class="home">
 
   <div id="chrome-header"></div>
 
+  <!-- 프로모션 팝업 (오늘 하루 보지 않기) -->
+  <div class="ad-modal" id="ad-modal" hidden>
+    <div class="ad-dim" id="ad-dim"></div>
+    <div class="ad-box">
+      <a href="index.html#event" class="ad-img" id="ad-link">
+        <img src="assets/ads.jpg" alt="FLUSH × 올리브영 한정 기획 세트 — Bunny Drop Edition">
+      </a>
+      <div class="ad-foot">
+        <button type="button" id="ad-today">오늘 하루 보지 않기</button>
+        <button type="button" class="ad-close" id="ad-close">닫기 ✕</button>
+      </div>
+    </div>
+  </div>
+
   <main>
-    <!-- 히어로 슬라이드 배너 — 이미지 3장 (2·3번은 이미지 대기 중) -->
+    <!-- 히어로 슬라이드 배너 — 이미지 3장 -->
     <section class="main-banner" id="event">
       <div class="banner-track" id="banner-track">
         <div class="banner-slide s1">
@@ -28,9 +42,21 @@
             </div>
           </div>
         </div>
-        <div class="banner-slide s2" role="img" aria-label="FLUSH 히어로 배너 2"></div>
-        <div class="banner-slide s-ph">
-          <span class="img-ph wide" role="img" aria-label="hero image 3 (1920x600)"></span>
+        <div class="banner-slide s2">
+          <div class="container">
+            <div class="banner-copy">
+              <h2 data-i18n="hero2.title"></h2>
+              <a href="product.html?id=lip-liner" class="btn btn-primary" data-i18n="hero2.cta"></a>
+            </div>
+          </div>
+        </div>
+        <div class="banner-slide s3">
+          <div class="container">
+            <div class="banner-copy">
+              <h2 data-i18n="hero3.title"></h2>
+              <a href="product.html?id=lip-tint" class="btn btn-primary" data-i18n="hero3.cta"></a>
+            </div>
+          </div>
         </div>
       </div>
       <div class="banner-nav" id="banner-nav"></div>
@@ -91,15 +117,28 @@
       <div class="fp-info" id="fp-info"></div>
     </section>
 
-    <!-- 포토리뷰 -->
-    <section class="section">
+    <!-- Mix & Match 1+1 : 드래그앤드롭 골라담기 -->
+    <section class="section" id="mixmatch">
       <div class="container">
         <div class="section-head">
-          <span class="eyebrow">Photo Review</span>
-          <h2 class="section-title" data-i18n="sec.review.title"></h2>
-          <p class="section-sub" data-i18n="sec.review.sub"></p>
+          <span class="eyebrow">Mix &amp; Match</span>
+          <h2 class="section-title" data-i18n="sec.mix.title"></h2>
         </div>
-        <div class="review-grid" id="review-grid"></div>
+        <div class="mix-layout">
+          <div class="mix-pool">
+            <div class="mix-cats" id="mix-cats"></div>
+            <div class="mix-items" id="mix-items"></div>
+          </div>
+          <div class="mix-tray">
+            <p class="mix-tray-title" data-i18n="mix.tray"></p>
+            <div class="mix-slots">
+              <div class="mix-slot" data-slot="0"><span class="mix-slot-ph">＋</span></div>
+              <span class="mix-plus">+</span>
+              <div class="mix-slot" data-slot="1"><span class="mix-slot-ph">＋</span></div>
+            </div>
+            <div class="mix-result" id="mix-result"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -118,9 +157,9 @@
 
   <div id="chrome-footer"></div>
 
-  <script src="js/i18n.js?v=8"></script>
-  <script src="js/data.js?v=8"></script>
-  <script src="js/main.js?v=8"></script>
+  <script src="js/i18n.js?v=29"></script>
+  <script src="js/data.js?v=29"></script>
+  <script src="js/main.js?v=29"></script>
   <script>
     // NEW / BEST 탭 섹션 : 각 4개씩 (제품 겹침 허용)
     let bestnewTab = "best";
@@ -257,7 +296,7 @@
       visual.addEventListener("pointercancel", endDrag);
     })();
 
-    // Choose your Flush — 자동 스크롤 마퀴, 호버 시 정지 + 배경을 쉐이드 컬러로
+    // Choose your Flush — 드래그 캐러셀 : 드래그로 하나씩 이동, 배경=현재 쉐이드, 텍스트 항상 표시
     (() => {
       // 제품이 골고루 섞이도록 라운드로빈으로 뽑기 (쉐이드 순서는 랜덤)
       const pools = PRODUCTS.filter((p) => !p.comingSoon).map((p) => ({
@@ -270,87 +309,251 @@
           if (q.shades.length) ITEMS.push({ p: q.p, s: q.shades.pop() });
         });
       }
+      const BASE = ITEMS;
+      const N = BASE.length;
       const section = document.getElementById("flush-picker");
+      const stage = document.getElementById("fp-stage");
       const track = document.getElementById("fp-track");
       const info = document.getElementById("fp-info");
+      let drag = 0;
 
-      const itemHTML = (it, i) => `
-        <a class="fp-item" data-i="${i}" href="product.html?id=${it.p.id}&shade=${encodeURIComponent(it.s.name)}">
-          <img src="${it.s.img}" alt="${pName(it.p)} ${it.s.name}" draggable="false" loading="lazy">
-        </a>`;
-      // 끊김 없는 루프를 위해 두 벌 렌더
-      track.innerHTML = ITEMS.map(itemHTML).join("") + ITEMS.map(itemHTML).join("");
+      // 무한 순환 : 3벌 렌더 후 가운데 벌에서 시작, 끝에 닿으면 순간 보정
+      const ALL = [];
+      for (let r = 0; r < 3; r++) BASE.forEach((it) => ALL.push(it));
+      track.innerHTML = ALL.map(
+        (it, i) => `<div class="fp-item" data-i="${i}"><img src="${it.s.img}" alt="${pName(it.p)} ${it.s.name}" draggable="false" loading="lazy"></div>`
+      ).join("");
 
-      // 자동 스크롤 (호버 중엔 정지) — 시간 기반이라 프레임레이트와 무관하게 일정 속도
-      const SPEED = 60; // px/s
-      let offset = 0;
-      let paused = false;
-      let last = performance.now();
-      (function tick(now) {
-        const dt = Math.min(now - last, 100);
-        last = now;
-        if (!paused) {
-          offset -= (dt / 1000) * SPEED;
-          const half = track.scrollWidth / 2;
-          if (-offset >= half) offset += half;
-          track.style.transform = `translateX(${offset}px)`;
-        }
-        requestAnimationFrame(tick);
-      })(performance.now());
+      let idx = N + Math.floor(N / 2);
+      const itemW = () => track.children[0].getBoundingClientRect().width;
 
-      section.addEventListener("mouseenter", () => (paused = true));
-      section.addEventListener("mouseleave", () => {
-        paused = false;
-        section.classList.remove("tinted");
-        section.style.background = "";
-        info.innerHTML = "";
-      });
-      track.addEventListener("mouseover", (e) => {
-        const el = e.target.closest(".fp-item");
-        if (!el) return;
-        const it = ITEMS[el.dataset.i];
+      function place(instant) {
+        track.style.transition = instant ? "none" : "";
+        const x = (stage.getBoundingClientRect().width - itemW()) / 2 - idx * itemW() + drag; // 현재 아이템 정중앙
+        track.style.transform = `translateX(${x}px)`;
+      }
+      function paint() {
+        [...track.children].forEach((el, i) => el.classList.toggle("active", i === idx));
+        const it = BASE[((idx % N) + N) % N];
         section.classList.add("tinted");
-        section.style.background = it.s.hex;
+        section.style.background = it.s.hex; // 배경색 = 현재 쉐이드
         info.innerHTML = `
           <p class="fp-product">${pName(it.p)}</p>
           <p class="fp-shade">${it.s.name}</p>
           <p class="fp-cat">${it.p.catLabel}</p>
           <a class="fp-more" href="product.html?id=${it.p.id}&shade=${encodeURIComponent(it.s.name)}">VIEW MORE</a>`;
+      }
+      function go(instant) { place(instant); paint(); }
+
+      // 스냅 애니메이션이 끝나면 가운데 벌로 순간 이동 → 무한 순환
+      track.addEventListener("transitionend", () => {
+        if (idx < N) { idx += N; place(true); }
+        else if (idx >= 2 * N) { idx -= N; place(true); }
+      });
+
+      // 드래그로 한 번에 하나씩 이동 (아이템 탭 시 해당 항목으로)
+      let startX = null;
+      stage.addEventListener("pointerdown", (e) => {
+        startX = e.clientX;
+        stage.setPointerCapture(e.pointerId);
+        stage.classList.add("dragging");
+      });
+      stage.addEventListener("pointermove", (e) => {
+        if (startX === null) return;
+        drag = e.clientX - startX;
+        place(true);
+      });
+      const end = (e) => {
+        if (startX === null) return;
+        const tapped = Math.abs(drag) < 6 && e.target.closest(".fp-item");
+        const dir = drag <= -40 ? 1 : drag >= 40 ? -1 : 0;
+        idx = tapped ? +tapped.dataset.i : idx + dir;
+        drag = 0;
+        startX = null;
+        stage.classList.remove("dragging");
+        go(false);
+      };
+      stage.addEventListener("pointerup", end);
+      stage.addEventListener("pointercancel", end);
+      window.addEventListener("resize", () => place(true));
+
+      // 자동 전환 : 2초마다 다음 아이템 (드래그 중이거나 마우스 올리면 정지)
+      let hover = false;
+      stage.addEventListener("mouseenter", () => (hover = true));
+      stage.addEventListener("mouseleave", () => (hover = false));
+      setInterval(() => {
+        if (startX !== null || hover) return;
+        idx += 1;
+        go(false);
+      }, 2000);
+
+      go(true);
+    })();
+
+    // Mix & Match 1+1 : 카테고리 선택 → 쉐이드 목록, 2개 골라담기(드래그/클릭), 저렴한 1개 무료
+    (() => {
+      const CATS = PRODUCTS.filter((p) => !p.comingSoon);
+      const catsEl = document.getElementById("mix-cats");
+      const itemsEl = document.getElementById("mix-items");
+      const result = document.getElementById("mix-result");
+      const slots = [...document.querySelectorAll(".mix-slot")];
+      const picks = [null, null]; // { p, s }
+      let activeCat = CATS[0].id;
+
+      catsEl.innerHTML = CATS.map(
+        (p) => `<button class="mix-cat ${p.id === activeCat ? "active" : ""}" data-cat="${p.id}">${pName(p)}</button>`
+      ).join("");
+
+      function renderItems() {
+        const p = getProduct(activeCat);
+        itemsEl.innerHTML = p.shades
+          .filter((s) => s.img)
+          .map(
+            (s) => `<div class="mix-item" draggable="true" data-id="${p.id}" data-shade="${s.name}">
+              <div class="mix-item-img">${productImg(s.img, `${pName(p)} ${s.name}`)}</div>
+              <p class="mix-item-name">${s.name}</p>
+              <p class="mix-item-price">${formatPrice(p.price)}</p>
+            </div>`
+          )
+          .join("");
+      }
+      catsEl.addEventListener("click", (e) => {
+        const b = e.target.closest("[data-cat]");
+        if (!b) return;
+        activeCat = b.dataset.cat;
+        catsEl.querySelectorAll(".mix-cat").forEach((x) => x.classList.toggle("active", x.dataset.cat === activeCat));
+        renderItems();
+      });
+
+      let dragData = null;
+      itemsEl.addEventListener("dragstart", (e) => {
+        const it = e.target.closest(".mix-item");
+        if (!it) return;
+        dragData = { id: it.dataset.id, shade: it.dataset.shade };
+        e.dataTransfer.setData("text/plain", `${it.dataset.id}\t${it.dataset.shade}`);
+        e.dataTransfer.effectAllowed = "copy";
+        it.classList.add("dragging");
+      });
+      itemsEl.addEventListener("dragend", (e) => e.target.closest(".mix-item")?.classList.remove("dragging"));
+      // 클릭(터치)으로도 담기 — 빈 슬롯에 채움
+      itemsEl.addEventListener("click", (e) => {
+        const it = e.target.closest(".mix-item");
+        if (!it) return;
+        const empty = picks.findIndex((x) => !x);
+        if (empty >= 0) place(empty, it.dataset.id, it.dataset.shade);
+      });
+
+      slots.forEach((slot) => {
+        slot.addEventListener("dragover", (e) => { e.preventDefault(); slot.classList.add("over"); });
+        slot.addEventListener("dragleave", () => slot.classList.remove("over"));
+        slot.addEventListener("drop", (e) => {
+          e.preventDefault();
+          slot.classList.remove("over");
+          const data = e.dataTransfer.getData("text/plain");
+          const [id, shade] = data ? data.split("\t") : [dragData?.id, dragData?.shade];
+          place(+slot.dataset.slot, id, shade);
+        });
+        slot.addEventListener("click", () => {
+          const i = +slot.dataset.slot;
+          if (picks[i]) { picks[i] = null; render(); }
+        });
+      });
+
+      function place(i, id, shadeName) {
+        const p = getProduct(id);
+        if (!p) return;
+        picks[i] = { p, s: getShade(p, shadeName) };
+        render();
+      }
+
+      function render() {
+        slots.forEach((slot, i) => {
+          const pk = picks[i];
+          if (pk) {
+            slot.innerHTML = `${productImg(pk.s.img || pk.p.img, `${pName(pk.p)} ${pk.s.name}`)}<span class="mix-slot-name">${pName(pk.p)}<small>${pk.s.name}</small></span>`;
+            slot.classList.add("filled");
+          } else {
+            slot.innerHTML = `<span class="mix-slot-ph">＋</span>`;
+            slot.classList.remove("filled");
+          }
+        });
+        if (picks[0] && picks[1]) {
+          const a = picks[0].p.price, b = picks[1].p.price;
+          const orig = a + b, pay = orig - 3000; // 두 번째 아이템 3,000원 할인
+          result.innerHTML = `
+            <div class="price-row center">
+              <span class="price-list">${formatPrice(orig)}</span>
+              <span class="price-rate">1+1</span>
+              <span class="price-sale">${formatPrice(pay)}</span>
+            </div>
+            <button class="btn btn-primary" id="mix-add">${t("mix.add")}</button>`;
+          document.getElementById("mix-add").addEventListener("click", () => {
+            picks.forEach((pk) => addToCart(pk.p.id, pk.s.name, 1));
+            picks[0] = picks[1] = null;
+            render();
+          });
+        } else {
+          result.innerHTML = "";
+        }
+      }
+      renderItems();
+      render();
+    })();
+
+    // 프로모션 팝업 — 오늘 하루 보지 않기(로컬 저장)
+    (() => {
+      const modal = document.getElementById("ad-modal");
+      if (!modal) return;
+      const KEY = "flush-ad-hide";
+      const today = new Date().toISOString().slice(0, 10);
+      try { if (localStorage.getItem(KEY) === today) return; } catch (e) {}
+      modal.hidden = false;
+      const close = () => (modal.hidden = true);
+      document.getElementById("ad-close").addEventListener("click", close);
+      document.getElementById("ad-dim").addEventListener("click", close);
+      document.getElementById("ad-link").addEventListener("click", close);
+      document.getElementById("ad-today").addEventListener("click", () => {
+        try { localStorage.setItem(KEY, today); } catch (e) {}
+        close();
       });
     })();
 
-    // 포토리뷰 : 평점 높은 순 4개
-    document.getElementById("review-grid").innerHTML = [...REVIEWS]
-      .sort((a, b) => b.rating - a.rating)
-      .slice(0, 4)
-      .map(reviewCardHTML)
-      .join("");
-
-    // 히어로 슬라이더 — 이미지 있는 슬라이드만 자동 순환(+도트), 플레이스홀더 제외
+    // 히어로 슬라이더 — 항상 오른쪽으로 무한 순환(마지막 → 첫 이미지를 이어서, 되감기 없음)
     (() => {
       const banner = document.querySelector(".main-banner");
       const track = document.getElementById("banner-track");
       const nav = document.getElementById("banner-nav");
-      // 이미지가 채워진 슬라이드만 (플레이스홀더 s-ph 는 순환에서 제외)
-      const slots = [...track.children]
-        .map((el, i) => ({ el, i }))
-        .filter(({ el }) => !el.classList.contains("s-ph"))
-        .map(({ i }) => i);
-      let pos = 0;
+      const slides = [...track.children].filter((el) => !el.classList.contains("s-ph"));
+      const N = slides.length;
 
-      nav.innerHTML = slots
+      nav.innerHTML = slides
         .map((_, i) => `<button class="banner-dot ${i === 0 ? "active" : ""}" data-slot="${i}" aria-label="banner ${i + 1}"></button>`)
         .join("");
 
-      function fitBanner() {
-        banner.style.height = track.children[slots[pos]].offsetHeight + "px";
+      if (N <= 1) {
+        banner.style.height = (track.children[0] ? track.children[0].offsetHeight : 0) + "px";
+        return;
       }
-      function go(p) {
-        pos = (p + slots.length) % slots.length;
-        track.style.transform = `translateX(-${slots[pos] * 100}%)`;
-        nav.querySelectorAll(".banner-dot").forEach((d, i) => d.classList.toggle("active", i === pos));
+
+      // 첫 슬라이드 복제본을 끝에 붙여, 마지막에서 첫 이미지로 '오른쪽으로' 이어지게
+      const clone = slides[0].cloneNode(true);
+      clone.setAttribute("aria-hidden", "true");
+      track.appendChild(clone);
+
+      let idx = 0;
+      function fitBanner() { banner.style.height = track.children[idx].offsetHeight + "px"; }
+      function setDots() {
+        nav.querySelectorAll(".banner-dot").forEach((d, i) => d.classList.toggle("active", i === idx % N));
+      }
+      function go(n, animate = true) {
+        idx = n;
+        track.style.transition = animate ? "" : "none";
+        track.style.transform = `translateX(-${idx * 100}%)`;
+        setDots();
         fitBanner();
       }
+      // 복제본(마지막)에 도달하면 애니메이션 없이 실제 첫 슬라이드로 순간 이동 → 끊김 없는 정방향 루프
+      track.addEventListener("transitionend", () => { if (idx === N) go(0, false); });
 
       nav.addEventListener("click", (e) => {
         const dot = e.target.closest("[data-slot]");
@@ -359,13 +562,10 @@
       window.addEventListener("resize", fitBanner);
       fitBanner();
 
-      // 자동 전환 (마우스 올리면 정지) — 이미지 슬라이드가 2장 이상일 때만
-      if (slots.length > 1) {
-        let hover = false;
-        banner.addEventListener("mouseenter", () => (hover = true));
-        banner.addEventListener("mouseleave", () => (hover = false));
-        setInterval(() => { if (!hover) go(pos + 1); }, 5000);
-      }
+      let hover = false;
+      banner.addEventListener("mouseenter", () => (hover = true));
+      banner.addEventListener("mouseleave", () => (hover = false));
+      setInterval(() => { if (!hover && idx < N) go(idx + 1); }, 10000);
     })();
   </script>
 </body>

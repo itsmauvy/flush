@@ -20,7 +20,7 @@ const PRODUCTS = [
     catLabel: "LIP",
     name: "Glossy Lip Tint",
     nameKo: "글로시 립 틴트",
-    img: "assets/products/lip tint 03 pop.png",
+    img: "assets/products/lip tint 05 odd.png",
     price: 12000,
     listPrice: 15000,
     rating: 4.8,

@@ -66,6 +66,10 @@ const I18N = {
   /* ---- 홈 : 배너/혜택/섹션 ---- */
   "bn1.title": { kr: "볼 위에 가볍게 번지는<br><em>오늘의 생기</em>", en: "A light wash of color,<br><em>today's fresh glow</em>" },
   "bn1.cta": { kr: "베스트셀러 보러가기", en: "Shop Best Seller" },
+  "hero2.title": { kr: "또렷한 한 줄로 완성하는<br><em>나만의 입술 라인</em>", en: "Defined in a single line,<br><em>lips that feel like you</em>" },
+  "hero2.cta": { kr: "립 라이너 보러가기", en: "Shop Lip Liner" },
+  "hero3.title": { kr: "올리브영 단독 한정 기획,<br><em>젤리 틴트 스페셜 세트</em>", en: "Olive Young exclusive,<br><em>Jelly Tint special set</em>" },
+  "hero3.cta": { kr: "기획세트 구경하기", en: "Shop the Set" },
   "bn2.eyebrow": { kr: "🎁 WELCOME BENEFIT", en: "🎁 WELCOME BENEFIT" },
   "bn2.title": { kr: "처음 만나는 플러쉬,<br><em>웰컴 쿠폰</em>으로 시작하세요", en: "New to FLUSH?<br>Start with a <em>welcome coupon</em>" },
   "bn2.desc": { kr: "신규가입 즉시 지급 · 전 상품 사용 가능 · 다운로드 후 30일 이내", en: "Issued instantly on sign-up · valid on all items · use within 30 days" },
@@ -93,6 +97,11 @@ const I18N = {
   "sec.mood.sub": { kr: "내 피부톤에 맞는 컬러, 무드에서 시작하면 쉬워요", en: "Finding your color is easy when you start from a mood" },
   "sec.set.title": { kr: "립 + 치크 기획세트 10%", en: "Lip + Cheek Sets — 10% Off" },
   "sec.set.sub": { kr: "함께 쓰면 더 예쁜 조합을 할인된 세트로 만나보세요", en: "Pairings that look better together, at a set price" },
+  "sec.mix.title": { kr: "골라담는 1+1 할인!", en: "Pick &amp; Mix — 1+1 Deal!" },
+  "sec.mix.sub": { kr: "카테고리에서 마음에 드는 컬러 2개를 골라 담으면, 저렴한 1개는 공짜!", en: "Pick two colors you love from any category — the cheaper one's on us!" },
+  "mix.hint": { kr: "제품을 끌어다 놓거나 눌러서 담아보세요 · 2개 채우면 1+1 🎁", en: "Drag or tap products into the slots · fill both for 1+1 🎁" },
+  "mix.add": { kr: "1+1로 담기", en: "Add as 1+1" },
+  "mix.tray": { kr: "내 1+1 조합", en: "Your 1+1 Picks" },
   "sec.review.title": { kr: "생생한 구매후기", en: "Real Customer Reviews" },
   "sec.review.sub": { kr: "먼저 써본 분들의 솔직한 발색 후기", en: "Honest swatch reviews from customers" },
   "teaser.title": { kr: "가방 속에 넣고 다니고 싶은<br>작은 컬러 오브제", en: "A little color objet<br>you'll want to carry everywhere" },
@@ -156,6 +165,9 @@ const I18N = {
   "cart.total": { kr: "총 결제 금액", en: "Total" },
   "cart.checkout": { kr: "구매하기", en: "Checkout" },
   "cart.together.title": { kr: "같이 쓰면 더 예쁜 조합", en: "Better Together" },
+  "cart.selectAll": { kr: "전체", en: "All" },
+  "cart.delSelected": { kr: "선택삭제", en: "Delete selected" },
+  "cart.delAll": { kr: "전체삭제", en: "Clear all" },
 
   /* ---- 브랜드 스토리 ---- */
   "ab.hero.title": { kr: "입술과 볼 위에 가볍게 번지는 생기,<br>그 생기를 담은 <em>투명한 컬러 오브제</em>", en: "A fresh glow that spreads lightly on lips and cheeks,<br>held in a <em>transparent color objet</em>" },
