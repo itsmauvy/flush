@@ -5,7 +5,8 @@
 
 const params = new URLSearchParams(location.search);
 const product = getProduct(params.get("id")) || PRODUCTS[0];
-let selectedShade = product.shades[0] || null;
+// URL 의 shade 로 진입하면 해당 쉐이드부터 (없으면 첫 쉐이드)
+let selectedShade = getShade(product, params.get("shade"));
 let qty = 1;
 
 // 출시 예정 제품으로 직접 진입한 경우 shop으로 돌려보냄
@@ -98,11 +99,7 @@ function renderProduct() {
     document.getElementById("info-volume").textContent = VOLUMES[product.id];
   }
 
-  if (selectedShade) {
-    document.getElementById("pd-img").setAttribute(
-      "aria-label", `${pName(product)} ${selectedShade.name}`
-    );
-  }
+  renderMainImage();
   renderShadePicker();
   renderReviews();
 
@@ -124,11 +121,17 @@ function renderProduct() {
     .join("");
 }
 
+function renderMainImage() {
+  const el = document.getElementById("pd-img");
+  if (!el) return;
+  const src = (selectedShade && selectedShade.img) || product.img;
+  if (src) el.src = src;
+  el.alt = selectedShade ? `${pName(product)} ${selectedShade.name}` : pName(product);
+}
+
 function selectShade(name) {
   selectedShade = getShade(product, name);
-  document.getElementById("pd-img").setAttribute(
-    "aria-label", `${pName(product)} ${selectedShade.name}`
-  );
+  renderMainImage();
   renderShadePicker();
 }
 

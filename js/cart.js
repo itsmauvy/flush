@@ -3,8 +3,6 @@
    order summary, demo checkout
    ============================================================ */
 
-const SHIPPING_FEE = 3000;
-
 function cartItemHTML(item) {
   const product = getProduct(item.productId);
   if (!product) return "";
