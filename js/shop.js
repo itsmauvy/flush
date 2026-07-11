@@ -1,5 +1,5 @@
 /* ============================================================
-   FLUSH shop — 카테고리/무드 필터, 정렬, 검색어(q), URL 쿼리 동기화
+   FLUSH shop — 카테고리 필터, 정렬, 검색어(q), URL 쿼리 동기화
    ============================================================ */
 
 const CATEGORY_FILTERS = [
@@ -8,10 +8,9 @@ const CATEGORY_FILTERS = [
   { id: "lip-tint", label: "립 틴트", labelEn: "Lip Tint" },
   { id: "lip-balm", label: "립 밤", labelEn: "Lip Balm" },
   { id: "lip-liner", label: "립 라이너", labelEn: "Lip Liner" },
-  { id: "cheek", label: "치크 전체", labelEn: "All Cheek" },
+  { id: "cheek", label: "치크", labelEn: "Cheek" },
   { id: "cream-blush", label: "크림 블러셔", labelEn: "Cream Blush" },
   { id: "powder-blush", label: "파우더 블러셔", labelEn: "Powder Blush" },
-  { id: "cheek-tint", label: "치크 틴트", labelEn: "Cheek Tint" },
 ];
 
 function catLabel(f) {
@@ -27,7 +26,6 @@ const SORTS = {
 
 const state = {
   category: "all",
-  mood: "all",
   sort: "popular",
   q: "",
 };
@@ -35,17 +33,14 @@ const state = {
 function readQuery() {
   const params = new URLSearchParams(location.search);
   const cat = params.get("category");
-  const mood = params.get("mood");
   const q = params.get("q");
   if (cat && CATEGORY_FILTERS.some((f) => f.id === cat)) state.category = cat;
-  if (mood && (mood === "all" || MOODS.some((m) => m.id === mood))) state.mood = mood;
   if (q) state.q = q.trim();
 }
 
 function writeQuery() {
   const params = new URLSearchParams();
   if (state.category !== "all") params.set("category", state.category);
-  if (state.mood !== "all") params.set("mood", state.mood);
   if (state.q) params.set("q", state.q);
   const qs = params.toString();
   history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
@@ -57,11 +52,6 @@ function matchCategory(product) {
     return product.category === state.category;
   }
   return product.id === state.category;
-}
-
-function matchMood(product) {
-  if (state.mood === "all") return true;
-  return product.shades.some((s) => s.mood === state.mood);
 }
 
 /* 한글 검색어 → 영문 쉐이드/무드 별칭 */
@@ -92,17 +82,10 @@ function renderFilters() {
     (f) => `<button class="filter-btn ${state.category === f.id ? "active" : ""}"
               data-filter-cat="${f.id}">${catLabel(f)}</button>`
   ).join("");
-
-  const moods = [{ id: "all", label: LANG === "en" ? "All" : "전체", hex: "#E9D5D2" }, ...MOODS];
-  document.getElementById("filter-mood").innerHTML = moods.map(
-    (m) => `<button class="filter-btn ${state.mood === m.id ? "active" : ""}"
-              data-filter-mood="${m.id}">
-              <span class="mood-dot" style="background:${m.hex}"></span>${m.label}</button>`
-  ).join("");
 }
 
 function renderGrid() {
-  const list = PRODUCTS.filter((p) => matchCategory(p) && matchMood(p) && matchQuery(p))
+  const list = PRODUCTS.filter((p) => matchCategory(p) && matchQuery(p))
     .sort(SORTS[state.sort] || SORTS.popular);
   document.getElementById("result-bar-text").innerHTML =
     LANG === "en"
@@ -165,15 +148,8 @@ document.addEventListener("click", (e) => {
     rerender();
     return;
   }
-  const mood = e.target.closest("[data-filter-mood]");
-  if (mood) {
-    state.mood = mood.dataset.filterMood;
-    rerender();
-    return;
-  }
   if (e.target.closest("#filter-clear")) {
     state.category = "all";
-    state.mood = "all";
     state.q = "";
     document.getElementById("sort-select").value = state.sort = "popular";
     rerender();

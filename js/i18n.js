@@ -55,6 +55,7 @@ const I18N = {
 
   /* ---- 공통 : 카드/버튼/토스트 ---- */
   "btn.add": { kr: "담기", en: "Add" },
+  "picker.title": { kr: "쉐이드를 선택하세요", en: "Choose a shade" },
   "btn.soon": { kr: "출시 예정", en: "Coming Soon" },
   "btn.addSet": { kr: "세트 담기", en: "Add Set" },
   "card.reviews": { kr: "리뷰", en: "reviews" },
@@ -87,7 +88,7 @@ const I18N = {
   "benefit3.desc": { kr: "가입 즉시 지급 · 전 상품 사용 가능", en: "Issued instantly · valid on all items" },
   "qc.tint": { kr: "립 틴트", en: "Lip Tint" },
   "qc.balm": { kr: "립밤", en: "Lip Balm" },
-  "qc.liner": { kr: "아이라이너", en: "Eyeliner" },
+  "qc.liner": { kr: "립라이너", en: "Lip Liner" },
   "qc.cream": { kr: "크림 블러쉬", en: "Cream Blush" },
   "qc.powder": { kr: "파우더 블러쉬", en: "Powder Blush" },
   "qc.set": { kr: "기획세트", en: "Sets" },
@@ -97,11 +98,6 @@ const I18N = {
   "sec.mood.sub": { kr: "내 피부톤에 맞는 컬러, 무드에서 시작하면 쉬워요", en: "Finding your color is easy when you start from a mood" },
   "sec.set.title": { kr: "립 + 치크 기획세트 10%", en: "Lip + Cheek Sets — 10% Off" },
   "sec.set.sub": { kr: "함께 쓰면 더 예쁜 조합을 할인된 세트로 만나보세요", en: "Pairings that look better together, at a set price" },
-  "sec.mix.title": { kr: "골라담는 1+1 할인!", en: "Pick &amp; Mix — 1+1 Deal!" },
-  "sec.mix.sub": { kr: "카테고리에서 마음에 드는 컬러 2개를 골라 담으면, 저렴한 1개는 공짜!", en: "Pick two colors you love from any category — the cheaper one's on us!" },
-  "mix.hint": { kr: "제품을 끌어다 놓거나 눌러서 담아보세요 · 2개 채우면 1+1 🎁", en: "Drag or tap products into the slots · fill both for 1+1 🎁" },
-  "mix.add": { kr: "1+1로 담기", en: "Add as 1+1" },
-  "mix.tray": { kr: "내 1+1 조합", en: "Your 1+1 Picks" },
   "sec.review.title": { kr: "생생한 구매후기", en: "Real Customer Reviews" },
   "sec.review.sub": { kr: "먼저 써본 분들의 솔직한 발색 후기", en: "Honest swatch reviews from customers" },
   "teaser.title": { kr: "가방 속에 넣고 다니고 싶은<br>작은 컬러 오브제", en: "A little color objet<br>you'll want to carry everywhere" },
@@ -113,9 +109,7 @@ const I18N = {
 
   /* ---- Shop ---- */
   "shop.title": { kr: "전체상품", en: "All Products" },
-  "shop.sub": { kr: "립과 치크, 무드별 컬러로 쉽게 골라보세요", en: "Lip & cheek — browse easily by color mood" },
-  "shop.filter.cat": { kr: "카테고리", en: "Category" },
-  "shop.filter.mood": { kr: "컬러 무드", en: "Color Mood" },
+  "shop.sub": { kr: "립과 치크, 카테고리별로 쉽게 골라보세요", en: "Lip & cheek — browse easily by category" },
   "shop.sort.popular": { kr: "인기순", en: "Most Popular" },
   "shop.sort.review": { kr: "리뷰 많은순", en: "Most Reviewed" },
   "shop.sort.priceAsc": { kr: "낮은 가격순", en: "Price: Low to High" },

@@ -712,13 +712,55 @@ function renderCartDrawer() {
   updateCartBadge();
 }
 
-/* ---------- global event delegation ---------- */
-document.addEventListener("click", (e) => {
-  const quick = e.target.closest("[data-quick-add]");
-  if (quick) {
-    addToCart(quick.dataset.quickAdd, null, 1);
+/* ---------- 담기 전 쉐이드 선택 팝오버 ---------- */
+function closeShadePicker() {
+  document.querySelector(".shade-picker")?.remove();
+}
+
+function openShadePicker(btn, productId) {
+  const product = getProduct(productId);
+  if (!product) return;
+  const shades = product.shades.filter((s) => s.img);
+  if (shades.length <= 1) {
+    addToCart(productId, shades[0]?.name || null, 1);
     return;
   }
+  const bottom = btn.closest(".product-bottom");
+  const wasOpen = bottom.querySelector(".shade-picker");
+  closeShadePicker();
+  if (wasOpen) return; // 같은 버튼 재클릭 → 닫기
+
+  const card = btn.closest(".product-card");
+  const activeShade = card?.querySelector(".shade-dots .is-active")?.dataset.shade;
+  const pop = document.createElement("div");
+  pop.className = "shade-picker";
+  pop.innerHTML = `
+    <p class="shade-picker-title">${t("picker.title")}</p>
+    ${shades
+      .map(
+        (s) => `<button type="button" class="shade-pick${s.name === activeShade ? " current" : ""}" data-pick-shade="${s.name}">
+          <i style="background:${s.hex}"></i><span>${s.name}</span>
+        </button>`
+      )
+      .join("")}`;
+  bottom.appendChild(pop);
+}
+
+/* ---------- global event delegation ---------- */
+document.addEventListener("click", (e) => {
+  const pick = e.target.closest("[data-pick-shade]");
+  if (pick) {
+    const pid = pick.closest(".product-card")?.dataset.pid;
+    if (pid) addToCart(pid, pick.dataset.pickShade, 1);
+    closeShadePicker();
+    return;
+  }
+  const quick = e.target.closest("[data-quick-add]");
+  if (quick) {
+    openShadePicker(quick, quick.dataset.quickAdd);
+    return;
+  }
+  if (!e.target.closest(".shade-picker")) closeShadePicker();
   const setBtn = e.target.closest("[data-add-set]");
   if (setBtn) addSetToCart(setBtn.dataset.addSet);
 });

@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>전체상품 — 플러쉬 FLUSH 공식몰</title>
-  <meta name="description" content="FLUSH의 립 &amp; 치크 전 제품. 무드별 컬러로 쉽게 골라보세요.">
+  <meta name="description" content="FLUSH의 립 &amp; 치크 전 제품. 카테고리별로 쉽게 골라보세요.">
   <link rel="icon" href="assets/flush_icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=29">
+  <link rel="stylesheet" href="css/style.css?v=30">
 </head>
 <body>
 
@@ -23,45 +23,34 @@
         <p data-i18n="shop.sub"></p>
       </div>
 
-      <div class="shop-layout">
-        <aside class="shop-filters">
-          <div class="filter-group">
-            <h4 data-i18n="shop.filter.cat"></h4>
-            <div class="filter-list" id="filter-category"></div>
-          </div>
-          <div class="filter-group">
-            <h4 data-i18n="shop.filter.mood"></h4>
-            <div class="filter-list" id="filter-mood"></div>
-          </div>
-        </aside>
+      <div class="shop-cats" id="filter-category"></div>
 
-        <section>
-          <div class="shop-result-bar">
-            <span id="result-bar-text"></span>
-            <span style="display:flex;gap:14px;align-items:center">
-              <select id="sort-select" class="sort-select" aria-label="sort">
-                <option value="popular" data-i18n="shop.sort.popular"></option>
-                <option value="review" data-i18n="shop.sort.review"></option>
-                <option value="price-asc" data-i18n="shop.sort.priceAsc"></option>
-                <option value="price-desc" data-i18n="shop.sort.priceDesc"></option>
-              </select>
-              <button class="filter-clear" id="filter-clear" data-i18n="shop.clear"></button>
-            </span>
-          </div>
-          <div class="product-grid" id="shop-grid"></div>
-          <div class="empty-note" id="empty-note" hidden>
-            <p data-i18n="shop.empty"></p>
-          </div>
-        </section>
-      </div>
+      <section>
+        <div class="shop-result-bar">
+          <span id="result-bar-text"></span>
+          <span style="display:flex;gap:14px;align-items:center">
+            <select id="sort-select" class="sort-select" aria-label="sort">
+              <option value="popular" data-i18n="shop.sort.popular"></option>
+              <option value="review" data-i18n="shop.sort.review"></option>
+              <option value="price-asc" data-i18n="shop.sort.priceAsc"></option>
+              <option value="price-desc" data-i18n="shop.sort.priceDesc"></option>
+            </select>
+            <button class="filter-clear" id="filter-clear" data-i18n="shop.clear"></button>
+          </span>
+        </div>
+        <div class="product-grid" id="shop-grid"></div>
+        <div class="empty-note" id="empty-note" hidden>
+          <p data-i18n="shop.empty"></p>
+        </div>
+      </section>
     </div>
   </main>
 
   <div id="chrome-footer"></div>
 
-  <script src="js/i18n.js?v=29"></script>
-  <script src="js/data.js?v=29"></script>
-  <script src="js/main.js?v=29"></script>
-  <script src="js/shop.js?v=29"></script>
+  <script src="js/i18n.js?v=30"></script>
+  <script src="js/data.js?v=30"></script>
+  <script src="js/main.js?v=30"></script>
+  <script src="js/shop.js?v=30"></script>
 </body>
 </html>
