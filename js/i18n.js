@@ -20,11 +20,7 @@ const I18N = {
   "hd.search": { kr: "쉐이드, 제품명 검색 (예: 코랄)", en: "Search shades or products (e.g. coral)" },
   "hd.my": { kr: "마이페이지", en: "My Page" },
   "hd.cart": { kr: "장바구니", en: "Cart" },
-  "gnb.best": { kr: "베스트", en: "Best" },
-  "gnb.new": { kr: "NEW", en: "NEW" },
   "hd.suggest": { kr: "추천 검색어", en: "Trending" },
-  "gnb.lip": { kr: "립", en: "Lip" },
-  "gnb.cheek": { kr: "치크", en: "Cheek" },
   "gnb.set": { kr: "기획세트", en: "Sets" },
   "gnb.event": { kr: "이벤트", en: "Events" },
   "gnb.brand": { kr: "브랜드스토리", en: "Brand Story" },
@@ -51,7 +47,6 @@ const I18N = {
     kr: "Copyright © 2026 <strong>FLUSH</strong>. All rights reserved. 본 사이트는 포트폴리오용 데모이며 실제 판매가 이루어지지 않습니다.",
     en: "Copyright © 2026 <strong>FLUSH</strong>. All rights reserved. This is a portfolio demo — no real orders are processed.",
   },
-  "float.chat": { kr: "상담", en: "Chat" },
 
   /* ---- 공통 : 카드/버튼/토스트 ---- */
   "btn.add": { kr: "담기", en: "Add" },
@@ -60,9 +55,8 @@ const I18N = {
   "btn.addSet": { kr: "세트 담기", en: "Add Set" },
   "card.reviews": { kr: "리뷰", en: "reviews" },
   "toast.viewCart": { kr: "장바구니 보기", en: "View Cart" },
-  "toast.kakao": { kr: "카카오톡 채널 상담은 준비 중이에요 (데모) 💛", en: "KakaoTalk chat is coming soon (demo) 💛" },
   "toast.coupon": { kr: "데모 사이트라 쿠폰 지급은 흉내만 내요 🎁", en: "This is a demo — the coupon is just pretend 🎁" },
-  "toast.checkout": { kr: "주문이 완료되었습니다! (포트폴리오 데모라 실제 결제는 되지 않아요) 💕", en: "Order complete! (This is a portfolio demo — no real payment) 💕" },
+  "toast.login": { kr: "포트폴리오 데모라 실제 로그인은 되지 않아요 🔒", en: "This is a demo — login isn't actually connected 🔒" },
 
   /* ---- 홈 : 배너/혜택/섹션 ---- */
   "bn1.title": { kr: "볼 위에 가볍게 번지는<br><em>오늘의 생기</em>", en: "A light wash of color,<br><em>today's fresh glow</em>" },
@@ -118,7 +112,6 @@ const I18N = {
   "shop.empty": { kr: "조건에 맞는 상품이 없어요. 다른 무드를 골라보세요 🌸", en: "No products match. Try another mood 🌸" },
 
   /* ---- 상세 ---- */
-  "pd.shadeLabel": { kr: "쉐이드 선택", en: "Select Shade" },
   "pd.addCart": { kr: "장바구니 담기", en: "Add to Cart" },
   "pd.buyNow": { kr: "바로 구매하기", en: "Buy Now" },
   "pd.tab.info": { kr: "상품정보", en: "Details" },
@@ -143,8 +136,6 @@ const I18N = {
   "pd.ship.noreturnVal": { kr: "개봉 및 사용한 화장품은 재판매가 불가하여 교환/반품이 어려워요 (단순 변심 시 왕복 배송비 6,000원 부담)", en: "Opened or used cosmetics cannot be resold and are not eligible for return (₩6,000 round-trip shipping applies for change of mind)" },
   "pd.ship.cs": { kr: "고객센터", en: "Customer Service" },
   "pd.ship.csVal": { kr: "1670-0707 (평일 10:00 - 17:00, 점심 12:00 - 13:00)", en: "1670-0707 (Weekdays 10:00 - 17:00, Lunch 12:00 - 13:00)" },
-  "pd.pairs.title": { kr: "이 컬러와 어울리는 조합", en: "Pairs Well With This Color" },
-  "pd.pairs.sub": { kr: "립과 치크를 같은 무드로 맞추면 얼굴 전체의 톤이 정리돼요", en: "Matching lip and cheek moods pulls your whole look together" },
 
   /* ---- 장바구니 ---- */
   "cart.title": { kr: "장바구니", en: "Cart" },
@@ -162,6 +153,43 @@ const I18N = {
   "cart.selectAll": { kr: "전체", en: "All" },
   "cart.delSelected": { kr: "선택삭제", en: "Delete selected" },
   "cart.delAll": { kr: "전체삭제", en: "Clear all" },
+
+  /* ---- 로그인 ---- */
+  "login.title": { kr: "로그인", en: "Log In" },
+  "login.email": { kr: "이메일", en: "Email" },
+  "login.emailPh": { kr: "이메일을 입력하세요", en: "Enter your email" },
+  "login.pw": { kr: "비밀번호", en: "Password" },
+  "login.pwPh": { kr: "비밀번호를 입력하세요", en: "Enter your password" },
+  "login.keep": { kr: "로그인 상태 유지", en: "Keep me signed in" },
+  "login.findId": { kr: "아이디 찾기", en: "Find ID" },
+  "login.findPw": { kr: "비밀번호 찾기", en: "Find Password" },
+  "login.submit": { kr: "로그인", en: "Log In" },
+  "login.noAccount": { kr: "아직 회원이 아니신가요?", en: "Don't have an account?" },
+  "login.divider": { kr: "또는", en: "or" },
+  "login.kakao": { kr: "카카오로 로그인", en: "Continue with Kakao" },
+
+  /* ---- 주문/결제 ---- */
+  "co.title": { kr: "주문/결제", en: "Checkout" },
+  "co.items": { kr: "주문 상품", en: "Order Items" },
+  "co.shipTitle": { kr: "배송지 정보", en: "Shipping Info" },
+  "co.recipient": { kr: "받는 사람", en: "Recipient" },
+  "co.recipientPh": { kr: "이름을 입력하세요", en: "Enter recipient name" },
+  "co.phone": { kr: "연락처", en: "Phone" },
+  "co.phonePh": { kr: "010-0000-0000", en: "010-0000-0000" },
+  "co.address": { kr: "주소", en: "Address" },
+  "co.addressPh": { kr: "배송받을 주소를 입력하세요", en: "Enter shipping address" },
+  "co.request": { kr: "배송 요청사항", en: "Delivery Request" },
+  "co.requestPh": { kr: "예: 부재 시 문 앞에 놔주세요", en: "e.g. Leave at the door if I'm out" },
+  "co.payTitle": { kr: "결제 수단", en: "Payment Method" },
+  "co.payCard": { kr: "신용카드", en: "Credit Card" },
+  "co.payKakao": { kr: "카카오페이", en: "Kakao Pay" },
+  "co.payBank": { kr: "무통장입금", en: "Bank Transfer" },
+  "co.summary": { kr: "결제 금액", en: "Payment Summary" },
+  "co.submit": { kr: "결제하기", en: "Place Order" },
+  "co.done.title": { kr: "주문이 완료되었습니다!", en: "Order Complete!" },
+  "co.done.desc": { kr: "포트폴리오 데모라 실제 결제는 진행되지 않아요 💕", en: "This is a portfolio demo — no real payment was made 💕" },
+  "co.done.orderNo": { kr: "주문번호", en: "Order No." },
+  "co.done.cta": { kr: "쇼핑 계속하기", en: "Continue Shopping" },
 
   /* ---- 브랜드 스토리 ---- */
   "ab.hero.title": { kr: "입술과 볼 위에 가볍게 번지는 생기,<br>그 생기를 담은 <em>투명한 컬러 오브제</em>", en: "A fresh glow that spreads lightly on lips and cheeks,<br>held in a <em>transparent color objet</em>" },

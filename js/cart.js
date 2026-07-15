@@ -140,14 +140,15 @@ document.addEventListener("click", (e) => {
   if (e.target.closest("[data-add-set]")) renderCart();
 });
 
-// 구매하기 (선택 항목 결제, 미선택은 남김)
+// 구매하기 (선택 항목만 결제 페이지로, 미선택은 장바구니에 남김)
 document.getElementById("checkout-btn").addEventListener("click", () => {
-  if (!getCart().some((it) => !cartDeselected.has(cartKey(it)))) return;
-  const survivors = getCart().filter((it) => cartDeselected.has(cartKey(it)));
+  const cart = getCart();
+  const selected = cart.filter((it) => !cartDeselected.has(cartKey(it)));
+  if (!selected.length) return;
+  const survivors = cart.filter((it) => cartDeselected.has(cartKey(it)));
   cartDeselected.clear();
-  showToast(t("toast.checkout"));
   saveCart(survivors);
-  renderCart();
+  startCheckout(selected);
 });
 
 renderCart();

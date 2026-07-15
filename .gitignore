@@ -1,0 +1,5 @@
+# local tooling / preview config
+.claude/
+
+# leftover nested copy of the site (not part of the deployed project)
+flush-main/

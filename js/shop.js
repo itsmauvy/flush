@@ -2,17 +2,6 @@
    FLUSH shop — 카테고리 필터, 정렬, 검색어(q), URL 쿼리 동기화
    ============================================================ */
 
-const CATEGORY_FILTERS = [
-  { id: "all", label: "전체", labelEn: "All" },
-  { id: "lip", label: "립 전체", labelEn: "All Lip" },
-  { id: "lip-tint", label: "립 틴트", labelEn: "Lip Tint" },
-  { id: "lip-balm", label: "립 밤", labelEn: "Lip Balm" },
-  { id: "lip-liner", label: "립 라이너", labelEn: "Lip Liner" },
-  { id: "cheek", label: "치크", labelEn: "Cheek" },
-  { id: "cream-blush", label: "크림 블러셔", labelEn: "Cream Blush" },
-  { id: "powder-blush", label: "파우더 블러셔", labelEn: "Powder Blush" },
-];
-
 function catLabel(f) {
   return LANG === "en" ? f.labelEn : f.label;
 }

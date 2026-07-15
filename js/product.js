@@ -8,6 +8,7 @@ const product = getProduct(params.get("id")) || PRODUCTS[0];
 // URL 의 shade 로 진입하면 해당 쉐이드부터 (없으면 첫 쉐이드)
 let selectedShade = getShade(product, params.get("shade"));
 let qty = 1;
+let currentSlide = 0;
 
 // 출시 예정 제품으로 직접 진입한 경우 shop으로 돌려보냄
 if (product.comingSoon) location.replace("shop.html");
@@ -23,14 +24,13 @@ const VOLUMES = {
 function renderShadePicker() {
   document.getElementById("pd-shades").innerHTML = product.shades
     .map(
-      (s) => `<button class="shade-swatch ${s === selectedShade ? "active" : ""}"
-                style="background:${s.hex}" title="${s.name}"
-                aria-label="${s.name}" data-shade="${s.name}"></button>`
+      (s) => `<button type="button" class="shade-swatch ${s === selectedShade ? "active" : ""}"
+                title="${s.name}" aria-label="${s.name}" data-shade="${s.name}">
+                <span class="shade-swatch-img" style="background:${s.hex}"></span>
+                <span class="shade-swatch-name">${s.name}</span>
+              </button>`
     )
     .join("");
-  document.getElementById("pd-shade-name").textContent = selectedShade
-    ? selectedShade.name
-    : "-";
 }
 
 function renderReviews() {
@@ -113,13 +113,9 @@ function renderProduct() {
     )
     .join("");
   document.getElementById("pd-texture").hidden = product.texturePoints.length === 0;
-
-  document.getElementById("pd-pairs").innerHTML = product.pairsWith
-    .map(getProduct)
-    .filter(Boolean)
-    .map((p) => productCardHTML(p))
-    .join("");
 }
+
+let hasModelSlide = false;
 
 function renderMainImage() {
   const el = document.getElementById("pd-img");
@@ -127,6 +123,30 @@ function renderMainImage() {
   const src = (selectedShade && selectedShade.img) || product.img;
   if (src) el.src = src;
   el.alt = selectedShade ? `${pName(product)} ${selectedShade.name}` : pName(product);
+
+  const modelEl = document.getElementById("pd-img-model");
+  const modelSrc = selectedShade ? shadeModelSrc(selectedShade) : null;
+  hasModelSlide = !!modelSrc;
+  if (modelSrc) {
+    modelEl.src = modelSrc;
+    modelEl.alt = `${pName(product)} ${selectedShade.name} 모델컷`;
+    modelEl.onerror = () => {
+      hasModelSlide = false;
+      goToSlide(0);
+    };
+  }
+  goToSlide(0);
+}
+
+function goToSlide(index) {
+  currentSlide = index;
+  document.getElementById("pd-slides").classList.toggle("on-model", index === 1);
+  document.querySelectorAll(".pd-slide-dot").forEach((d, i) =>
+    d.classList.toggle("active", i === index)
+  );
+  document.getElementById("pd-slide-dots").hidden = !hasModelSlide;
+  document.getElementById("pd-slide-prev").hidden = index === 0;
+  document.getElementById("pd-slide-next").hidden = !hasModelSlide || index === 1;
 }
 
 function selectShade(name) {
@@ -139,6 +159,13 @@ function selectShade(name) {
 document.getElementById("pd-shades").addEventListener("click", (e) => {
   const btn = e.target.closest("[data-shade]");
   if (btn) selectShade(btn.dataset.shade);
+});
+
+document.getElementById("pd-slide-prev").addEventListener("click", () => goToSlide(0));
+document.getElementById("pd-slide-next").addEventListener("click", () => goToSlide(1));
+document.getElementById("pd-slide-dots").addEventListener("click", (e) => {
+  const dot = e.target.closest("[data-slide]");
+  if (dot) goToSlide(Number(dot.dataset.slide));
 });
 
 document.getElementById("qty-minus").addEventListener("click", () => {
@@ -158,8 +185,7 @@ document.getElementById("pd-add").addEventListener("click", () => {
 
 document.getElementById("pd-buy-now").addEventListener("click", () => {
   if (!selectedShade) return;
-  addToCart(product.id, selectedShade.name, qty);
-  location.href = "cart.html";
+  startCheckout([{ productId: product.id, shade: selectedShade.name, qty }]);
 });
 
 document.getElementById("pd-tabs").addEventListener("click", (e) => {

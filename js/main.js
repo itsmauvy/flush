@@ -53,6 +53,22 @@ function removeFromCart(productId, shadeName) {
   saveCart(getCart().filter((it) => !(it.productId === productId && it.shade === shadeName)));
 }
 
+/* ---------- checkout handoff (cart/product → checkout.html) ---------- */
+const CHECKOUT_KEY = "flush-checkout";
+
+function startCheckout(items) {
+  sessionStorage.setItem(CHECKOUT_KEY, JSON.stringify(items));
+  location.href = "checkout.html";
+}
+
+function getCheckoutItems() {
+  try {
+    return JSON.parse(sessionStorage.getItem(CHECKOUT_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
 function cartTotalQty() {
   return getCart().reduce((sum, it) => sum + it.qty, 0);
 }
@@ -124,9 +140,8 @@ function renderHeader() {
           </button>
         </div>
         <div class="header-utils">
-          <a href="javascript:void(0)" class="util-item util-join">
+          <a href="login.html" class="util-item util-join">
             <span class="util-icon"><span class="material-symbols-outlined">person</span></span><span>${t("top.login")}</span>
-            <span class="signup-tip">${t("hd.signupTip")}</span>
           </a>
           <a href="cart.html" class="util-item cart-util">
             <span class="util-icon"><span class="material-symbols-outlined">shopping_cart</span></span><span>${t("hd.cart")}</span><i class="cart-count">0</i>
@@ -146,11 +161,10 @@ function renderHeader() {
             SHOP<span class="material-symbols-outlined">expand_more</span>
           </button>
           <div class="drawer-sub" hidden>
-            <a href="shop.html">${t("gnb.best")}</a>
-            <a href="shop.html?category=lip-tint">NEW</a>
-            <a href="shop.html?category=lip">${t("gnb.lip")}</a>
-            <a href="shop.html?category=cheek">${t("gnb.cheek")}</a>
-            <a href="index.html#mixmatch">${t("gnb.set")}</a>
+            ${CATEGORY_FILTERS.map(
+              (f) =>
+                `<a href="shop.html${f.id === "all" ? "" : `?category=${f.id}`}">${LANG === "en" ? f.labelEn : f.label}</a>`
+            ).join("")}
           </div>
         </div>
         <a class="drawer-item" href="index.html#event">EVENT</a>
@@ -174,7 +188,7 @@ function renderHeader() {
       </form>
 
       <div class="drawer-foot">
-        <a href="javascript:void(0)"><span class="material-symbols-outlined">person</span>LOGIN</a>
+        <a href="login.html"><span class="material-symbols-outlined">person</span>LOGIN</a>
         <a href="cart.html"><span class="material-symbols-outlined">shopping_cart</span>CART (<b class="cart-count-text">0</b>)</a>
         <span class="lang-switch">
           <span class="material-symbols-outlined">language</span>
@@ -321,10 +335,8 @@ function renderFloating() {
   const wrap = document.createElement("div");
   wrap.className = "floating";
   wrap.innerHTML = `
-    <button class="float-btn kakao" title="${t("ft.kakao")}" aria-label="${t("ft.kakao")}"><span class="material-symbols-outlined">chat_bubble</span><span>${t("float.chat")}</span></button>
     <button class="float-btn top" id="float-top" title="TOP" aria-label="TOP"><span class="material-symbols-outlined">arrow_upward</span><span>TOP</span></button>`;
   document.body.appendChild(wrap);
-  wrap.querySelector(".kakao").addEventListener("click", () => showToast(t("toast.kakao")));
   wrap.querySelector("#float-top").addEventListener("click", () =>
     window.scrollTo({ top: 0, behavior: "smooth" })
   );
@@ -698,15 +710,16 @@ function renderCartDrawer() {
     syncCartPage();
   });
 
-  // 구매하기 (선택 항목 결제)
+  // 구매하기 (선택 항목만 결제 페이지로, 미선택은 장바구니에 남김)
   document.getElementById("cart-drawer-foot").addEventListener("click", (e) => {
     if (!e.target.closest("#cart-drawer-checkout")) return;
-    const survivors = getCart().filter((it) => cartDeselected.has(cartKey(it)));
+    const cart = getCart();
+    const selected = cart.filter((it) => !cartDeselected.has(cartKey(it)));
+    if (!selected.length) return;
+    const survivors = cart.filter((it) => cartDeselected.has(cartKey(it)));
     cartDeselected.clear();
-    showToast(t("toast.checkout"));
     saveCart(survivors);
-    if (!survivors.length) setCartDrawer(false);
-    syncCartPage();
+    startCheckout(selected);
   });
 
   updateCartBadge();
